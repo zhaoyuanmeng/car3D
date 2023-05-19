@@ -1,7 +1,13 @@
 <template>
   <div class="container">
     <h1>测试3D threejs页面</h1>
-    <div class="panel w-full" ref="canvasContainer"></div>
+    <div
+      class="panel w-full"
+      ref="canvasContainer"
+      @mousedown="onMouseDown"
+      @mousemove="onMouseMove"
+      @mouseup="onMouseUp"
+    ></div>
   </div>
 </template>
 
@@ -13,19 +19,18 @@ export default defineComponent({
   name: 'VueUse',
   setup() {
     const canvasContainer = ref<HTMLDivElement | null>(null);
+    const mouseDownPosition = ref<{ x: number; y: number } | null>(null);
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000,
+    );
 
     onMounted(() => {
       if (canvasContainer.value) {
         // 创建场景
         const scene = new THREE.Scene();
-
-        // 创建相机
-        const camera = new THREE.PerspectiveCamera(
-          75,
-          window.innerWidth / window.innerHeight,
-          0.1,
-          1000,
-        );
 
         // 创建渲染器
         const renderer = new THREE.WebGLRenderer();
@@ -57,8 +62,34 @@ export default defineComponent({
       }
     });
 
+    const onMouseDown = (event: MouseEvent) => {
+      mouseDownPosition.value = { x: event.clientX, y: event.clientY };
+    };
+
+    const onMouseMove = (event: MouseEvent) => {
+      if (mouseDownPosition.value) {
+        const { x: startX, y: startY } = mouseDownPosition.value;
+        const { clientX, clientY } = event;
+
+        const deltaX = (clientX - startX) * 0.005;
+        const deltaY = (clientY - startY) * 0.005;
+
+        camera.rotation.y += deltaX;
+        camera.rotation.x += deltaY;
+
+        mouseDownPosition.value = { x: clientX, y: clientY };
+      }
+    };
+
+    const onMouseUp = () => {
+      mouseDownPosition.value = null;
+    };
+
     return {
       canvasContainer,
+      onMouseDown,
+      onMouseMove,
+      onMouseUp,
     };
   },
 });
