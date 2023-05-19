@@ -4,7 +4,7 @@
       <div class="text-container">
         <h1 class="text-4xl font-bold text-white mb-8">长城汽车</h1>
         <p class="text-xl text-white mb-12">长城智能新能源，更胜更远更安全</p>
-        <a href="#" class="btn">参观3D展厅</a>
+        <router-link to="/carsview" class="btn">参观3D展厅</router-link>
       </div>
       <div class="image-container">
         <img src="@/assets/kv_pc_34.jpg" alt="Car Image" class="car-image" />
