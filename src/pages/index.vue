@@ -1,124 +1,67 @@
 <template>
-  <div class="container">
-    <h1>测试3D threejs页面</h1>
-    <div
-      class="panel w-full"
-      ref="canvasContainer"
-      @mousedown="onMouseDown"
-      @mousemove="onMouseMove"
-      @mouseup="onMouseUp"
-    ></div>
+  <div class="bg-primary h-screen flex items-center justify-center">
+    <div class="container mx-auto flex">
+      <div class="text-container">
+        <h1 class="text-4xl font-bold text-white mb-8">长城汽车</h1>
+        <p class="text-xl text-white mb-12">长城智能新能源，更胜更远更安全</p>
+        <a href="#" class="btn">参观3D展厅</a>
+      </div>
+      <div class="image-container">
+        <img src="@/assets/kv_pc_34.jpg" alt="Car Image" class="car-image" />
+      </div>
+    </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue';
-import * as THREE from 'three';
-
-export default defineComponent({
-  name: 'VueUse',
-  setup() {
-    const canvasContainer = ref<HTMLDivElement | null>(null);
-    const mouseDownPosition = ref<{ x: number; y: number } | null>(null);
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000,
-    );
-
-    onMounted(() => {
-      if (canvasContainer.value) {
-        // 创建场景
-        const scene = new THREE.Scene();
-
-        // 创建渲染器
-        const renderer = new THREE.WebGLRenderer();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        canvasContainer.value.appendChild(renderer.domElement);
-
-        // 创建正方形
-        const geometry = new THREE.BoxGeometry();
-        const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-        const cube = new THREE.Mesh(geometry, material);
-        scene.add(cube);
-
-        // 调整视角
-        camera.position.z = 5;
-
-        // 动画循环
-        const animate = function () {
-          requestAnimationFrame(animate);
-
-          // 旋转正方形
-          cube.rotation.x += 0.01;
-          cube.rotation.y += 0.01;
-
-          // 渲染场景和相机
-          renderer.render(scene, camera);
-        };
-
-        animate();
-      }
-    });
-
-    const onMouseDown = (event: MouseEvent) => {
-      mouseDownPosition.value = { x: event.clientX, y: event.clientY };
-    };
-
-    const onMouseMove = (event: MouseEvent) => {
-      if (mouseDownPosition.value) {
-        const { x: startX, y: startY } = mouseDownPosition.value;
-        const { clientX, clientY } = event;
-
-        const deltaX = (clientX - startX) * 0.005;
-        const deltaY = (clientY - startY) * 0.005;
-
-        camera.rotation.y += deltaX;
-        camera.rotation.x += deltaY;
-
-        mouseDownPosition.value = { x: clientX, y: clientY };
-      }
-    };
-
-    const onMouseUp = () => {
-      mouseDownPosition.value = null;
-    };
-
-    return {
-      canvasContainer,
-      onMouseDown,
-      onMouseMove,
-      onMouseUp,
-    };
-  },
-});
+<script>
+export default {
+  name: 'App',
+};
 </script>
 
 <style scoped>
 .container {
+  max-width: 1200px;
+}
+
+.bg-primary {
+  background: linear-gradient(166deg, #222, #c9e4e4, #ffe4e4);
+}
+
+.text-white {
+  color: #fff;
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 9999px;
+  background-color: #ff9800;
+  color: #fff;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.btn:hover {
+  background-color: rgba(255, 152, 0, 0.9);
+}
+
+.text-container {
+  flex: 1;
+  padding-right: 2rem;
+}
+
+.image-container {
+  flex: 1;
   display: flex;
-  flex-direction: column;
+  justify-content: flex-end;
   align-items: center;
-  justify-content: center;
-  height: 100vh;
 }
 
-h1 {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  text-align: center;
-  margin: 0;
-  padding: 0;
-  line-height: 50px;
-  z-index: 999;
-  color: #ffffff;
-}
-
-.panel {
-  width: 100%;
-  height: 100%;
+.car-image {
+  max-width: 100%;
+  height: auto;
+  max-height: 80vh; /* Adjust the value as needed */
+  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.6);
 }
 </style>

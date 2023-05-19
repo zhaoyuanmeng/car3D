@@ -21,6 +21,26 @@ const routes: Array<RouteRecordRaw> = [
     },
     component: () => import('@/pages/index.vue'),
   },
+  {
+    path: '/carsview',
+    name: 'Carsview',
+    meta: {
+      title: '展台',
+      keepAlive: true,
+      requireAuth: true,
+    },
+    component: () => import('@/pages/carsview.vue'),
+  },
+  {
+    path: '/about',
+    name: 'About',
+    meta: {
+      title: '关于',
+      keepAlive: true,
+      requireAuth: true,
+    },
+    component: () => import('@/pages/about.vue'),
+  },
 ];
 
 const router = createRouter({
