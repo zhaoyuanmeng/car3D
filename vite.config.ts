@@ -1,17 +1,24 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import babel from '@rollup/plugin-babel';
 
 import path from 'path';
 
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    babel({
+      babelHelpers: 'bundled',
+      exclude: 'node_modules/**',
+    }),
+  ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
   },
   optimizeDeps: {
-    include: ['axios', 'lodash'],
+    include: ['axios', 'lodash', 'three'],
   },
   build: {
     minify: 'terser',
