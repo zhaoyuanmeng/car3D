@@ -1,5 +1,5 @@
 <template>
-  <div ref="container"></div>
+  <div class="container" ref="container"></div>
   <div class="controls">
     <label for="color">Car Color:</label>
     <input type="color" id="color" v-model="carColor" @input="changeCarColor" />
@@ -21,10 +21,41 @@ export default {
   },
   mounted() {
     this.loadModel();
+    const debounce = (fn, delay) => {
+      let timer;
+      return function () {
+        if (timer) {
+          clearTimeout(timer);
+        }
+        timer = setTimeout(() => {
+          fn();
+        }, delay);
+      };
+    };
+    const cancelDebounce = debounce(this.loadModel, 200);
+
+    window.addEventListener('resize', () => {
+      //清除之前的内容
+      if (this.$refs.container) {
+        this.$refs.container.innerHTML = '';
+      }
+
+      // 调用延迟加载方法
+      cancelDebounce();
+    });
   },
   methods: {
     loadModel() {
       const container = this.$refs.container;
+
+      // 清除之前的内容
+      while (container.children.length > 0) {
+        const child = container.children[0];
+        if (child.dispose) {
+          child.dispose();
+        }
+        container.remove(child);
+      }
 
       // 创建场景
       const scene = new THREE.Scene();
@@ -59,13 +90,42 @@ export default {
       grid.rotation.x = Math.PI / 1;
       scene.add(grid);
 
+      // // 添加墙体
+      // const wallMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      // const wallGeometry = new THREE.BoxGeometry(24, 8, 0.1);
+      // const leftWall = new THREE.Mesh(wallGeometry, wallMaterial);
+      // leftWall.position.set(-12, 4, 12);
+      // const rightWall = new THREE.Mesh(wallGeometry, wallMaterial);
+      // rightWall.position.set(12, 4, 12);
+      // const backWall = new THREE.Mesh(wallGeometry, wallMaterial);
+      // backWall.position.set(12, 4, -12);
+      // const frontWall = new THREE.Mesh(wallGeometry, wallMaterial);
+      // frontWall.position.set(12, 4, 12);
+
+      // const middleWallMaterial = new THREE.MeshBasicMaterial({
+      //   color: 0xffffff,
+      // });
+      // const middleWallGeometry = new THREE.BoxGeometry(0.1, 8, 24);
+      // const middleWall = new THREE.Mesh(middleWallGeometry, middleWallMaterial);
+      // middleWall.position.set(0, 4, 0);
+
+      // scene.add(leftWall, rightWall, backWall, frontWall, middleWall);
+
       // 使用GLTFLoader加载汽车模型
       const loader = new GLTFLoader();
       loader.load(
         '../../public/lamborghini_aventador_svj_sdc__free.glb',
         (gltf) => {
           const carModel = gltf.scene;
+          carModel.position.y = 0.08;
           scene.add(carModel);
+
+          // 使用GLTFLoader加载地板模型
+          loader.load('../../public/sci-fi_floor_panel.glb', (gltf) => {
+            const floorModel = gltf.scene;
+            floorModel.scale.set(4, 4, 4); //地板模型缩放
+            scene.add(floorModel);
+          });
 
           // 添加OrbitControls控制器
           const controls = new OrbitControls(camera, renderer.domElement);
@@ -88,6 +148,7 @@ export default {
 <style scoped>
 .container {
   display: flex;
+  width: 100vw;
   height: 100vh;
 }
 .model-container {
