@@ -33,7 +33,10 @@ export default {
       const renderer = new THREE.WebGLRenderer();
       renderer.setSize(window.innerWidth, window.innerHeight);
       container.appendChild(renderer.domElement);
-
+      renderer.setClearColor('rgb(135,206,250)', 1.0);
+      renderer.setClearColor(0xffffff, 1.0);
+      renderer.setClearColor('#428bca', 1.0);
+      renderer.setClearColor('rgba(135,206,250,0.5)', 1.0);
       // 创建相机
       const camera = new THREE.PerspectiveCamera(
         75,
