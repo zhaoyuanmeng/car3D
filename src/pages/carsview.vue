@@ -45,11 +45,19 @@ export default {
         1000,
       );
       camera.position.z = 5;
+      camera.position.y = 4;
+      camera.position.x = 5;
 
       // 创建光源
       const light = new THREE.DirectionalLight(0xffffff, 1);
       light.position.set(1, 1, 1).normalize();
       scene.add(light);
+      // 绘制网格线
+      var grid = new THREE.GridHelper(24, 24, 0xff0000, 0x444444);
+      grid.material.opacity = 0.4;
+      grid.material.transparent = true;
+      grid.rotation.x = Math.PI / 1;
+      scene.add(grid);
 
       // 使用GLTFLoader加载汽车模型
       const loader = new GLTFLoader();
